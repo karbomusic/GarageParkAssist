@@ -1,5 +1,6 @@
 # GarageParkAssist
 For Arduino Nano - NeoPixel garage assistant
+Using this NeoPixel: https://www.adafruit.com/product/1487
 
 Uses Adafruit NeoPixel example code to give colored/animated car distance feedback:
 
