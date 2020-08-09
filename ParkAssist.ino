@@ -41,12 +41,15 @@ const int loopWait = 10;
 // defines pins/numbers
 const int trigPin = 2;
 const int echoPin = 3;
+const int motionPin = 4;
 
 // distance limits
 const int nearLimit = 82;
 const int farLimit = 243;
 const int midLimit = 112;
 const int dangerLimit = 45;
+long sleepTimer = 120;
+const long sleepDuration = 120; // 1 minute in reality
 
 // defines variables
 long duration;
@@ -68,6 +71,8 @@ void setup() {
 
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
   pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+  pinMode(motionPin, INPUT); // Motion detector as Input
+  
   Serial.begin(115200); // Starts the serial communication
 
   colorFill(strip.Color(0, 0, 0));
@@ -76,6 +81,23 @@ void setup() {
 
 void loop() {
 
+  // check motion pin and timeout/clear display if no motion
+  if(digitalRead(motionPin))
+  {
+    Serial.println("Motion detected!");
+    sleepTimer = 0;
+  }
+  else
+  {
+    sleepTimer +=1;
+    if(checkSleep())
+    {
+      strip.clear();
+      colorFill(strip.Color(0, 0, 0));
+      return;
+    }
+  }
+  
   // Clears the trigPin
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
@@ -93,8 +115,10 @@ void loop() {
 
   // Prints the distance
   Serial.print("Distance: ");
-  Serial.println(distance);
-
+  Serial.print(distance);
+  Serial.print(" - SleepTimer: ");
+  Serial.println(sleepTimer);
+  
   if (distance > farLimit) // out of range
   {
     Serial.println("Out of range...");
@@ -128,6 +152,10 @@ void loop() {
   delay(loopWait);
 }
 
+boolean checkSleep()
+{
+  return sleepTimer >= sleepDuration;
+}
 // kw: fill with solid color
 void colorFill(uint32_t color) {
   strip.fill(color, 0, LED_COUNT);
