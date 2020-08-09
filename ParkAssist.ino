@@ -49,7 +49,7 @@ const int farLimit = 243;
 const int midLimit = 112;
 const int dangerLimit = 45;
 long sleepTimer = 120;
-const long sleepDuration = 120; // 1 minute in reality
+const long sleepDuration = 120; // 1 minute in reality - we have different delays so this varies based on resting distance! Need to fix.
 
 // defines variables
 long duration;
